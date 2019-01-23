@@ -1,0 +1,23 @@
+<html>
+  <body>
+  <h1>Search</h1>
+    <form action="./">
+    <input type="submit" value="Go To Home" />
+</form>
+    <form method="POST" action="/searchByEmail">
+      Search By Email:<br>
+      <input type="text" name="Email"><br>
+        <input type="submit" value="Submit">
+    </form>
+
+  <h1>Search Results</h1>
+    {% for contact in contacts %}
+      <p>{{contact.FirstName}}</p>
+      <p>{{contact.LastName}}</p>
+      <p>{{contact.Phone}}</p>
+    <p>{{contact.Email}}</p>
+      <p>~~~~~~~~~~~~~~~~~~~~</p>
+    {% endfor %}
+
+  </body>
+</html>

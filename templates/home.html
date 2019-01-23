@@ -1,0 +1,52 @@
+<html>
+  <body>
+  <form action="./searchByEmail">
+    <input type="submit" value="Search By Email" />
+</form>
+    <form action="./searchByName">
+    <input type="submit" value="Search By First Name" />
+</form>
+    <form method="POST" action="/">
+      FirstName:<br>
+      <input type="text" name="FirstName"><br>
+      LastName:<br>
+        <input type="text" name="LastName"><br>
+      Phone: <br>
+      <input type="text" name="Phone"><br>
+      Email:<br>
+      <input type="text" name="Email"><br>
+
+      <input type="submit" value="Submit">
+    </form>
+
+  <h1>Contacts</h1>
+    <!--{% for contact in contacts %}-->
+      <!--<p>{{contact.FirstName}}</p>-->
+      <!--<p>{{contact.LastName}}</p>-->
+      <!--<p>{{contact.Phone}}</p>-->
+    <!--<p>{{contact.Email}}</p>-->
+      <!--<p>~~~~~~~~~~~~~~~~~~~~</p>-->
+    <!--{% endfor %}-->
+    {% for contact in contacts %}
+      <!--<p>{{contact.FirstName}}</p>-->
+      <!--<p>{{contact.LastName}}</p>-->
+      <!--<p>{{contact.Phone}}</p>-->
+    <!--<p>{{contact.Email}}</p>-->
+  <form method="POST" action="./update">
+    <input type="hidden" value="{{contact.FirstName}}" name="oldFName">
+    <input type="text" value="{{contact.FirstName}}" name="newFName">
+    <input type="hidden" value="{{contact.LastName}}" name="oldLName">
+    <input type="text" value="{{contact.LastName}}" name="newLName">
+    <input type="hidden" value="{{contact.Phone}}" name="oldPhone">
+    <input type="text" value="{{contact.Phone}}" name="newPhone">
+    <input type="hidden" value="{{contact.Email}}" name="oldEmail">
+    <input type="text" value="{{contact.Email}}" name="newEmail">
+    <input type="submit" value="Update">
+  </form>
+    <form method="POST" action="./delete">
+    <input type="hidden" value="{{contact.Email}}" name="Email">
+    <input type="submit" value="Delete">
+    </form>
+{% endfor %}
+  </body>
+</html>
