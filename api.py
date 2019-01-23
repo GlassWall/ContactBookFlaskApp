@@ -4,6 +4,7 @@ from flask import render_template
 from flask import request
 from flask_sqlalchemy import SQLAlchemy
 from flask import redirect
+from flask_paginate import Pagination, get_page_args
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
 database_file = "sqlite:///{}".format(os.path.join(project_dir, "contacts.db"))
@@ -13,6 +14,7 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = database_file
 db = SQLAlchemy(app)
 
+users = list(range(100))
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -22,6 +24,65 @@ class Contact(db.Model):
     Email =db.Column(db.String(80), unique=True, nullable=False, primary_key=False)
     def __repr__(self):
         return "<FirstName: {} \n LastName:{} \n Phone:{} \n Email:{}>".format(self.FirstName,self.LastName,self.Phone, self.Email)
+
+
+@app.route('/searchByEmail', methods=["GET","POST"])
+def searchByEmail():
+    page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+    total = len(users)
+
+    pagination = Pagination(page=page, per_page=per_page, total=total,
+                            css_framework='bootstrap4')
+    if request.form:
+        # contact = Contact.query.filter_by(Email=request.form.get("Email"))
+        email = request.form.get("Email")
+        if email != "":
+            contact = Contact.query.filter(Contact.Email.like("%{}%".format(email))).all()
+        else:
+            contact = []
+        print(type(contact))
+        return render_template('searchByEmail.html',
+                               users=contact,
+                               page=page,
+                               per_page=per_page,
+                               pagination=pagination,
+                               )
+    return render_template('searchByEmail.html',
+                           users=[],
+                           page=page,
+                           per_page=per_page,
+                           pagination=pagination,
+                           )
+
+@app.route('/searchByName', methods=["GET","POST"])
+def searchByName():
+    page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+    total = len(users)
+
+    pagination = Pagination(page=page, per_page=per_page, total=total,
+                            css_framework='bootstrap4')
+    if request.form:
+        firstName = request.form.get("FirstName")
+        if firstName != "":
+            contact = Contact.query.filter(Contact.Email.like("%{}%".format(firstName))).all()
+            total = len(contact)
+        else:
+            contact = []
+            total = 0
+        return render_template('searchByName.html',
+                               users=contact,
+                               page=page,
+                               per_page=per_page,
+                               pagination=pagination,
+                               )
+    return render_template('searchByName.html',
+                           users=[],
+                           page=page,
+                           per_page=per_page,
+                           pagination=pagination,
+                           )
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -35,22 +96,6 @@ def home():
     contacts = contact.query.all()
     print(contacts)
     return render_template("home.html", contacts=contacts)
-
-@app.route("/searchByEmail", methods=["GET", "POST"])
-def search():
-    if request.form:
-        contact = Contact.query.filter_by(Email=request.form.get("Email"))
-        print(contact)
-        return render_template("searchByEmail.html", contacts=contact)
-    return render_template("searchByEmail.html")
-
-@app.route("/searchByName", methods=["GET", "POST"])
-def searchByName():
-    if request.form:
-        contact = Contact.query.filter_by(FirstName=request.form.get("FirstName"))
-        print(contact)
-        return render_template("searchByName.html", contacts=contact)
-    return render_template("searchByName.html")
 
 
 @app.route("/update", methods=["POST"])

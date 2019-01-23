@@ -1,23 +1,45 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>flask-bootstrap example</title>
+    <!-- Bootstrap -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+  </head>
   <body>
-  <h1>Search</h1>
-      <form action="./">
+  <div class="container">
+    <form action="./">
     <input type="submit" value="Go To Home" />
 </form>
-    <form method="POST" action="/searchByName">
+      <form method="POST" action="/searchByName">
       Search By First Name:<br>
       <input type="text" name="FirstName"><br>
         <input type="submit" value="Submit">
     </form>
-
-  <h1>Search Results</h1>
-    {% for contact in contacts %}
-      <p>{{contact.FirstName}}</p>
-      <p>{{contact.LastName}}</p>
-      <p>{{contact.Phone}}</p>
-    <p>{{contact.Email}}</p>
-      <p>~~~~~~~~~~~~~~~~~~~~</p>
-    {% endfor %}
-
+  </div>
+    <div class="container">
+      {{ pagination.links }}
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td>{{ loop.index + (page - 1) * per_page }}</td>
+              <td>{{ user }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {{ pagination.links }}
+    </div>
   </body>
 </html>
