@@ -1,19 +1,8 @@
-# project/test_basic.py
-
-
-import os
 import unittest
 
 from api import app
 
-TEST_DB = 'test1.db'
-
-
 class BasicTests(unittest.TestCase):
-
-    ############################
-    #### setup and teardown ####
-    ############################
 
     # executed prior to each test
     def setUp(self):
