@@ -16,6 +16,9 @@ db = SQLAlchemy(app)
 
 users = list(range(100))
 
+def get_users(offset=0, per_page=10):
+    return users[offset: offset + per_page]
+
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     FirstName = db.Column(db.String(80), unique=False, nullable=False)
@@ -32,15 +35,15 @@ def searchByEmail():
                                            per_page_parameter='per_page')
     total = len(users)
 
+    pagination_users = get_users(offset=offset, per_page=per_page)
     pagination = Pagination(page=page, per_page=per_page, total=total,
                             css_framework='bootstrap4')
     if request.form:
-        # contact = Contact.query.filter_by(Email=request.form.get("Email"))
         email = request.form.get("Email")
         if email != "":
             contact = Contact.query.filter(Contact.Email.like("%{}%".format(email))).all()
         else:
-            contact = []
+            contact= []
         print(type(contact))
         return render_template('searchByEmail.html',
                                users=contact,
@@ -67,10 +70,8 @@ def searchByName():
         firstName = request.form.get("FirstName")
         if firstName != "":
             contact = Contact.query.filter(Contact.Email.like("%{}%".format(firstName))).all()
-            total = len(contact)
         else:
             contact = []
-            total = 0
         return render_template('searchByName.html',
                                users=contact,
                                page=page,
@@ -96,6 +97,8 @@ def home():
     contacts = contact.query.all()
     print(contacts)
     return render_template("home.html", contacts=contacts)
+
+
 
 
 @app.route("/update", methods=["POST"])
